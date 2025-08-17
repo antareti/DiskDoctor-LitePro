@@ -6,7 +6,6 @@
 <title>DiskDoctor</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-    /* Основные стили */
     body {
         margin: 0;
         font-family: 'Roboto', sans-serif;
@@ -29,7 +28,6 @@
 
     .logo {
         width: 140px;
-        height: auto;
         margin-bottom: 10px;
         transform: perspective(600px) rotateX(15deg) rotateY(-15deg);
         transition: transform 0.4s, box-shadow 0.4s;
@@ -64,12 +62,11 @@
     section {
         padding: 50px 20px;
         max-width: 1000px;
-        margin: auto;
+        margin: auto 0 30px;
         text-align: center;
+        border-radius: 15px;
         border-bottom: 1px solid rgba(34,34,34,0.6);
         background-color: rgba(18,18,18,0.85);
-        border-radius: 15px;
-        margin-bottom: 30px;
         backdrop-filter: blur(5px);
     }
 
@@ -110,9 +107,7 @@
         background: rgba(255,255,255,0.1);
         transition: 0.4s;
     }
-    .buttons a:hover::before {
-        left: 0;
-    }
+    .buttons a:hover::before { left: 0; }
     .buttons a:hover {
         transform: translateY(-3px);
         box-shadow: 0 8px 25px rgba(0,255,127,0.7);
@@ -193,9 +188,7 @@
     <img src="pro.png" alt="Платно" class="section-img">
     <div class="label">Платно</div>
     <div class="buttons">
-        <a href="https://t.me/+r_UnHx57J0JhYzI6" target="_blank">
-            💬 Написать в Telegram для покупки
-        </a>
+        <a href="https://t.me/+r_UnHx57J0JhYzI6" target="_blank">💬 Написать в Telegram для покупки</a>
     </div>
 </section>
 
