@@ -16,6 +16,23 @@
             background-color: #1f1f1f;
             padding: 20px;
             text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 10px;
+            transform: perspective(500px) rotateX(10deg) rotateY(-10deg);
+            box-shadow: 0 10px 25px rgba(0, 255, 127, 0.7);
+            border-radius: 15px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .logo:hover {
+            transform: perspective(500px) rotateX(0deg) rotateY(0deg) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 255, 127, 0.8);
         }
         header h1 {
             color: #00ff7f;
@@ -42,9 +59,6 @@
         }
         p {
             line-height: 1.6;
-        }
-        .buttons {
-            margin-top: 15px;
         }
         .buttons a {
             display: inline-block;
@@ -98,6 +112,7 @@
 </head>
 <body>
     <header>
+        <img src="hackpack_logo.png" alt="HackPack Logo" class="logo">
         <h1>DiskDoctor</h1>
         <nav>
             <a href="#lite">Lite</a>
