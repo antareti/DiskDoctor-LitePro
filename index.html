@@ -60,7 +60,7 @@
         p {
             line-height: 1.6;
         }
-        .buttons a {
+        .buttons input[type="submit"], .buttons a {
             display: inline-block;
             padding: 12px 25px;
             margin-top: 10px;
@@ -70,9 +70,11 @@
             border-radius: 12px;
             text-decoration: none;
             font-size: 16px;
+            cursor: pointer;
             transition: 0.3s;
+            border: none;
         }
-        .buttons a:hover {
+        .buttons input[type="submit"]:hover, .buttons a:hover {
             background-color: #00cc5a;
         }
         .section-img {
@@ -126,7 +128,7 @@
         <img src="free.png" alt="Бесплатно" class="section-img">
         <div class="label">Бесплатно</div>
         <div class="buttons">
-            <a href="https://disk.yandex.ru/d/t5ruq9rzG2wWKA" target="_blank">⬇️ Скачать бесплатно</a>
+            <a href="https://disk.yandex.ru/d/t5ruq9rzG2wKA" target="_blank">⬇️ Скачать бесплатно</a>
         </div>
     </section>
 
@@ -136,7 +138,9 @@
         <img src="pro.png" alt="Платно" class="section-img">
         <div class="label">Платно</div>
         <div class="buttons">
-            <a href="https://example.com/pay" target="_blank">💳 Оплатить и скачать</a>
+            <form method="post" action="pay.php">
+                <input type="submit" value="💳 Оплатить 10 USD и скачать">
+            </form>
         </div>
     </section>
 
