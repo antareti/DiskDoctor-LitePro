@@ -1,237 +1,436 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DiskDoctor</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<style>
-    body {
-        margin: 0;
-        font-family: 'Roboto', sans-serif;
-        background-color: #121212;
-        color: #e0e0e0;
-        text-align: center;
-        overflow-x: hidden;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiskDoctor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            text-align: center;
+            overflow-x: hidden;
+        }
 
-    header {
-        background-color: rgba(31,31,31,0.85);
-        padding: 30px 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 4px 15px rgba(0,255,127,0.3);
-        backdrop-filter: blur(5px);
-    }
+        header {
+            background-color: rgba(31, 31, 31, 0.85);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 255, 127, 0.3);
+            backdrop-filter: blur(5px);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-    .logo {
-        width: 140px;
-        margin-bottom: 10px;
-        transform: perspective(600px) rotateX(15deg) rotateY(-15deg);
-        transition: transform 0.4s, box-shadow 0.4s;
-        border-radius: 20px;
-        box-shadow: 0 8px 30px rgba(0,255,127,0.6);
-    }
-    .logo:hover {
-        transform: perspective(600px) rotateX(0deg) rotateY(0deg) scale(1.1);
-        box-shadow: 0 15px 50px rgba(0,255,127,0.8);
-    }
+        .logo {
+            width: 140px;
+            margin-bottom: 10px;
+            transform: perspective(600px) rotateX(15deg) rotateY(-15deg);
+            transition: transform 0.4s, box-shadow 0.4s;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 255, 127, 0.6);
+        }
 
-    header h1 {
-        color: #00ff7f;
-        margin: 10px 0;
-        font-size: 2.5rem;
-        text-shadow: 0 0 10px #00ff7f;
-    }
+        .logo:hover {
+            transform: perspective(600px) rotateX(0deg) rotateY(0deg) scale(1.1);
+            box-shadow: 0 15px 50px rgba(0, 255, 127, 0.8);
+        }
 
-    nav a {
-        color: #00ff7f;
-        margin: 0 20px;
-        text-decoration: none;
-        font-weight: bold;
-        font-size: 1.1rem;
-        transition: 0.3s;
-    }
-    nav a:hover {
-        color: #00cc5a;
-        text-shadow: 0 0 10px #00ff7f;
-    }
+        header h1 {
+            color: #00ff7f;
+            margin: 10px 0;
+            font-size: 2.5rem;
+            text-shadow: 0 0 10px #00ff7f;
+        }
 
-    section {
-        padding: 50px 20px;
-        max-width: 800px;
-        margin: 40px auto;
-        text-align: center;
-        border-radius: 15px;
-        border-bottom: 1px solid rgba(34,34,34,0.6);
-        background-color: rgba(18,18,18,0.85);
-        backdrop-filter: blur(5px);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        opacity: 0;
-        transform: translateY(50px);
-        transition: opacity 1s ease-out, transform 1s ease-out;
-    }
+        nav a {
+            color: #00ff7f;
+            margin: 0 20px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
 
-    section.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
+        nav a:hover {
+            color: #00cc5a;
+            text-shadow: 0 0 10px #00ff7f;
+        }
 
-    h2 {
-        color: #00ff7f;
-        margin-bottom: 20px;
-        font-size: 2rem;
-        text-shadow: 0 0 10px #00ff7f;
-    }
+        section {
+            padding: 50px 20px;
+            max-width: 800px;
+            margin: 40px auto;
+            text-align: center;
+            border-radius: 15px;
+            border-bottom: 1px solid rgba(34, 34, 34, 0.6);
+            background-color: rgba(18, 18, 18, 0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease-out, transform 1s ease-out;
+        }
 
-    p {
-        line-height: 1.6;
-        font-size: 1.1rem;
-        margin: 0 auto 20px auto;
-        max-width: 700px;
-    }
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
-    .buttons a {
-        display: inline-block;
-        padding: 14px 30px;
-        margin: 15px 10px 0 10px;
-        background: linear-gradient(45deg, #00ff7f, #00cc5a);
-        color: #121212;
-        font-weight: bold;
-        font-size: 1rem;
-        border-radius: 20px;
-        text-decoration: none;
-        box-shadow: 0 4px 15px rgba(0,255,127,0.5);
-        transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
-        position: relative;
-        overflow: hidden;
-    }
-    .buttons a::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: rgba(255,255,255,0.1);
-        transition: 0.4s;
-    }
-    .buttons a:hover::before { left: 0; }
-    .buttons a:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(0,255,127,0.7);
-        background: linear-gradient(45deg, #00cc5a, #00ff7f);
-    }
+        h2 {
+            color: #00ff7f;
+            margin-bottom: 20px;
+            font-size: 2rem;
+            text-shadow: 0 0 10px #00ff7f;
+        }
 
-    .section-img {
-        max-width: 250px;
-        width: 100%;
-        display: block;
-        margin: 20px auto;
-        border: 3px solid #00ff7f;
-        border-radius: 20px;
-        box-shadow: 0 6px 20px rgba(0,255,127,0.6);
-        transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .section-img:hover {
-        transform: scale(1.05) rotateZ(-1deg);
-        box-shadow: 0 10px 30px rgba(0,255,127,0.8);
-    }
+        p {
+            line-height: 1.6;
+            font-size: 1.1rem;
+            margin: 0 auto 20px auto;
+            max-width: 700px;
+        }
 
-    .label {
-        display: inline-block;
-        margin-bottom: 15px;
-        padding: 8px 20px;
-        background-color: #00ff7f;
-        color: #121212;
-        font-weight: bold;
-        border-radius: 20px;
-        font-size: 14px;
-        box-shadow: 0 4px 12px rgba(0,255,127,0.5);
-        text-transform: uppercase;
-    }
+        .buttons a {
+            display: inline-block;
+            padding: 14px 30px;
+            margin: 15px 10px 0 10px;
+            background: linear-gradient(45deg, #00ff7f, #00cc5a);
+            color: #121212;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0, 255, 127, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
 
-    footer {
-        text-align: center;
-        padding: 25px;
-        background-color: rgba(31,31,31,0.85);
-        margin-top: 40px;
-        font-size: 0.9rem;
-        color: #aaa;
-        backdrop-filter: blur(5px);
-    }
-    footer a {
-        color: #00ff7f;
-        text-decoration: none;
-        font-weight: bold;
-    }
-    footer a:hover {
-        text-shadow: 0 0 10px #00ff7f;
-    }
-</style>
+        .buttons a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transition: 0.4s;
+        }
+
+        .buttons a:hover::before {
+            left: 0;
+        }
+
+        .buttons a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 255, 127, 0.7);
+            background: linear-gradient(45deg, #00cc5a, #00ff7f);
+        }
+
+        .section-img {
+            max-width: 250px;
+            width: 100%;
+            display: block;
+            margin: 20px auto;
+            border: 3px solid #00ff7f;
+            border-radius: 20px;
+            box-shadow: 0 6px 20px rgba(0, 255, 127, 0.6);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .section-img:hover {
+            transform: scale(1.05) rotateZ(-1deg);
+            box-shadow: 0 10px 30px rgba(0, 255, 127, 0.8);
+        }
+
+        .label {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 20px;
+            background-color: #00ff7f;
+            color: #121212;
+            font-weight: bold;
+            border-radius: 20px;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(0, 255, 127, 0.5);
+            text-transform: uppercase;
+        }
+
+        .feature-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            border-radius: 10px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin: 15px;
+            width: calc(33% - 30px);
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(0, 255, 127, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 10px 30px rgba(0, 255, 127, 0.5);
+        }
+        
+        .feature-card h3 {
+            color: #00ff7f;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: #00ff7f;
+            margin-bottom: 10px;
+        }
+
+        .testimonial-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 5px solid #00ff7f;
+            max-width: 600px;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: left;
+        }
+        
+        .testimonial-card blockquote {
+            font-style: italic;
+            margin: 0;
+        }
+        
+        .testimonial-card p {
+            font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
+        }
+        
+        .faq-item {
+            width: 100%;
+            text-align: left;
+            margin-bottom: 15px;
+        }
+        
+        .faq-question {
+            background-color: rgba(0, 255, 127, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            position: relative;
+            transition: background-color 0.3s;
+        }
+        
+        .faq-question:hover {
+            background-color: rgba(0, 255, 127, 0.2);
+        }
+        
+        .faq-question::after {
+            content: '+';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        
+        .faq-question.active::after {
+            content: '-';
+            transform: translateY(-50%) rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, padding 0.5s ease-in-out;
+            padding: 0 15px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .faq-answer.open {
+            max-height: 200px;
+            padding: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            background-color: rgba(31, 31, 31, 0.85);
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #aaa;
+            backdrop-filter: blur(5px);
+        }
+
+        footer a {
+            color: #00ff7f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-shadow: 0 0 10px #00ff7f;
+        }
+        
+        @media (max-width: 768px) {
+            .feature-card {
+                width: 100%;
+                margin: 15px 0;
+            }
+        }
+    </style>
 </head>
 <body>
 
-<header>
-    <img src="hackpack_logo.png" alt="HackPack Logo" class="logo">
-    <h1>DiskDoctor</h1>
-    <nav>
-        <a href="#lite">Lite</a>
-        <a href="#better">Улучшенная версия</a>
-        <a href="#pro">LitePro</a>
-    </nav>
-</header>
+    <header>
+        <img src="https://via.placeholder.com/140x140?text=Logo" alt="DiskDoctor Logo" class="logo">
+        <h1>DiskDoctor</h1>
+        <nav>
+            <a href="#about">О нас</a>
+            <a href="#features">Функции</a>
+            <a href="#testimonials">Отзывы</a>
+            <a href="#faq">FAQ</a>
+            <a href="#download">Скачать</a>
+        </nav>
+    </header>
 
-<section id="lite">
-    <h2>DiskDoctor Lite — Бесплатная версия</h2>
-    <p>Быстрый анализ занятого места на диске, очистка мусора и простое управление файлами. Подходит для всех, кто хочет держать диск в порядке без лишних функций.</p>
-    <img src="free.png" alt="Бесплатно" class="section-img">
-    <div class="label">Бесплатно</div>
-    <div class="buttons">
-        <a href="https://drive.google.com/uc?export=download&id=1LfHXshDVY2ulyL1605q2zn_5eCWEX5Fq" target="_blank">⬇️ Скачать бесплатно</a>
-    </div>
-</section>
+    <section id="about">
+        <div class="label">Мощь и простота</div>
+        <h2>Ваш диск под контролем</h2>
+        <p>DiskDoctor — это мощное и простое в использовании программное обеспечение для диагностики и восстановления жестких дисков. С его помощью вы легко сможете найти и восстановить удаленные файлы, очистить диск от мусора и предотвратить потерю данных.</p>
+        <div class="buttons">
+            <a href="#download">Скачать бесплатно</a>
+            <a href="#features">Узнать больше</a>
+        </div>
+        <img src="https://via.placeholder.com/600x400?text=DiskDoctor+Interface" alt="Интерфейс программы DiskDoctor" class="section-img">
+    </section>
 
-<section id="better">
-    <h2>DiskDoctor: Улучшенная версия</h2>
-    <p>Полный контроль над диском, включая глубокий анализ, расширенные настройки очистки и подробные отчеты. Идеально для опытных пользователей и профессионалов.</p>
-    <img src="8.png" alt="Улучшенная версия" class="section-img">
-    <div class="buttons">
-        <!-- ССЫЛКА ОБНОВЛЕНА, ТЕПЕРЬ ОНА ВЕДЕТ НА about-us.html -->
-        <a href="about-us.html" target="_blank">Узнать больше</a>
-    </div>
-</section>
+    <section id="features">
+        <h2>Ключевые функции</h2>
+        <p>Наше ПО предоставляет полный набор инструментов для ухода за вашим диском. От восстановления данных до профилактики — DiskDoctor справится с любой задачей.</p>
+        <div style="display: flex; flex-wrap: wrap; justify-content: center;">
+            <div class="feature-card">
+                <span class="feature-icon">🔍</span>
+                <h3>Восстановление данных</h3>
+                <p>Верните случайно удаленные файлы, фотографии и документы всего за несколько кликов.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🧹</span>
+                <h3>Очистка диска</h3>
+                <p>Освободите ценное место на диске от временных файлов, кэша и другого мусора.</p>
+            </div>
+            <div class="feature-card">
+                <span class="feature-icon">🩺</span>
+                <h3>Мониторинг здоровья</h3>
+                <p>Следите за состоянием вашего диска в реальном времени, чтобы избежать внезапных сбоев.</p>
+            </div>
+        </div>
+    </section>
 
-<section id="pro">
-    <h2>DiskDoctor LitePro — Профессиональная версия</h2>
-    <p>Расширенные функции: 3D-графики, статистика, резервное копирование, тёмная тема. Доступно только по подписке.</p>
-    <img src="pro.png" alt="Платно" class="section-img">
-    <div class="label">Платно</div>
-    <div class="buttons">
-        <a href="https://t.me/+r_UnHx57J0JhYzI6" target="_blank">💬 Написать в Telegram для покупки</a>
-    </div>
-</section>
+    <section id="testimonials">
+        <h2>Что говорят наши пользователи</h2>
+        <p>Множество людей по всему миру доверяют DiskDoctor заботу о своих данных. Вот что они говорят:</p>
+        <div class="testimonial-card">
+            <blockquote>"Потерял все рабочие документы после сбоя системы. DiskDoctor спас меня! Восстановил всё, что нужно, быстро и без проблем."</blockquote>
+            <p>— Иван, IT-специалист</p>
+        </div>
+        <div class="testimonial-card">
+            <blockquote>"Отличная и простая программа. Всегда использую для очистки диска. Работает очень эффективно."</blockquote>
+            <p>— Елена, студентка</p>
+        </div>
+    </section>
 
-<footer>
-    &copy; 2025 DiskDoctor | <a href="https://github.com/antareti" target="_blank">GitHub</a>
-</footer>
+    <section id="faq">
+        <h2>Часто задаваемые вопросы</h2>
+        <div class="faq-item">
+            <div class="faq-question">Как установить DiskDoctor?</div>
+            <div class="faq-answer">
+                <p>Скачайте установочный файл с нашего сайта, запустите его и следуйте инструкциям на экране. Процесс займет всего пару минут.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Какие операционные системы поддерживаются?</div>
+            <div class="faq-answer">
+                <p>DiskDoctor совместим со всеми основными версиями Windows, macOS и Linux.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <div class="faq-question">Безопасно ли использовать DiskDoctor для восстановления данных?</div>
+            <div class="faq-answer">
+                <p>Да, программа работает в режиме "только для чтения", что гарантирует сохранность исходных данных на диске.</p>
+            </div>
+        </div>
+    </section>
 
-<script>
-    const sections = document.querySelectorAll('section');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if(entry.isIntersecting){
-                entry.target.classList.add('visible');
-            }
+    <section id="download">
+        <h2>Готовы начать?</h2>
+        <p>Защитите свои данные прямо сейчас. Скачайте DiskDoctor бесплатно и получите доступ к базовым функциям.</p>
+        <div class="buttons">
+            <a href="#">Скачать для Windows</a>
+            <a href="#">Скачать для macOS</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 DiskDoctor. Все права защищены. <a href="#">Политика конфиденциальности</a> | <a href="#">Условия использования</a></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('section');
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.2
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isActive = question.classList.contains('active');
+
+                    // Close all other open answers
+                    document.querySelectorAll('.faq-question.active').forEach(item => {
+                        if (item !== question) {
+                            item.classList.remove('active');
+                            item.nextElementSibling.classList.remove('open');
+                        }
+                    });
+
+                    // Toggle current answer
+                    question.classList.toggle('active');
+                    answer.classList.toggle('open');
+                });
+            });
         });
-    }, {threshold: 0.2});
-
-    sections.forEach(section => observer.observe(section));
-</script>
-
+    </script>
 </body>
 </html>
