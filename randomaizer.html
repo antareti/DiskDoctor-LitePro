@@ -19,7 +19,7 @@
 </head>
 <body>
   <h1>Рулетка — шанс выиграть 100$</h1>
-  <p>Введите код доступа, чтобы играть (5 попыток максимум)</p>
+  <p>Введите код доступа, чтобы играть</p>
   <input type="text" id="codeInput" placeholder="Введите код">
   <button onclick="activate()">Активировать</button>
   <div id="wheelContainer">
@@ -30,13 +30,8 @@
   <div id="status"></div>
 
   <script>
-    const eternalCode = "HACKPACKANTARETI1977";
     let activated = false;
     let attempts = 0;
-    const maxAttempts = 5;
-    let angle = 0;
-    let spinning = false;
-
     const options = Array(10).fill("LOSE"); // все сектора "LOSE"
     const colors = ["#e74c3c","#2ecc71","#3498db","#9b59b6","#f39c12",
                     "#1abc9c","#e67e22","#34495e","#d35400","#7f8c8d"];
@@ -46,6 +41,8 @@
     const size = canvas.width;
     const radius = size/2;
     const slice = 2 * Math.PI / options.length;
+    let angle = 0;
+    let spinning = false;
 
     function drawWheel() {
       ctx.clearRect(0,0,size,size);
@@ -65,30 +62,19 @@
         ctx.restore();
       }
     }
-
     drawWheel();
 
     function activate() {
-      const inputCode = document.getElementById("codeInput").value.trim();
-      if (inputCode === eternalCode) {
-        activated = true;
-        document.getElementById("spin").disabled = false;
-        document.getElementById("status").innerText = "Код принят! У вас есть 5 попыток.";
-      } else {
-        document.getElementById("status").innerText = "Неверный код!";
-      }
+      activated = true; // теперь всегда активируется
+      document.getElementById("spin").disabled = false;
+      document.getElementById("status").innerText = "Код принят! Можете играть сколько угодно.";
     }
 
     function spin() {
       if (!activated || spinning) return;
-      if (attempts >= maxAttempts) {
-        document.getElementById("status").innerText = "Ваши 5 попыток закончились!";
-        document.getElementById("spin").disabled = true;
-        return;
-      }
       spinning = true;
       attempts++;
-      let spinAngle = Math.random() * 360 + 1440; // минимум 4 оборота
+      let spinAngle = Math.random() * 360 + 1440;
       let duration = 4000;
       let start = null;
 
@@ -104,10 +90,7 @@
         } else {
           spinning = false;
           document.getElementById("status").innerText = 
-            `Попытка ${attempts}/${maxAttempts}: LOSE 😢`;
-          if (attempts >= maxAttempts) {
-            document.getElementById("spin").disabled = true;
-          }
+            `Попытка ${attempts}: LOSE 😢`;
         }
       }
       requestAnimationFrame(animate);
