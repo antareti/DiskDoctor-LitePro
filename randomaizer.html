@@ -85,13 +85,18 @@ let paid = false;
 
 // Функция оплаты через ваш кошелек
 function payForSpin() {
-    const confirmed = confirm("Для кручения рулетки оплатите 5$. После оплаты нажмите OK.");
+    // Ссылка на прямой перевод на ваш кошелек
+    const walletLink = "https://example-payment.com/send?to=UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr&amount=5";
+
+    // Открываем кошелек в новой вкладке
+    window.open(walletLink, "_blank");
+
+    // Подтверждение оплаты пользователем
+    const confirmed = confirm("После перевода 5$ нажмите OK, чтобы активировать рулетку.");
     if (confirmed) {
-        // Перенаправление на оплату (пример для крипто-кошелька или ссылки)
-        window.open("https://example-payment.com/send?to=UQB1VJhJmRowKWsqJig_T6DTNMO7Chdlfmi54WMpVfTdojUr&amount=5", "_blank");
         paid = true;
         document.getElementById("spinButton").disabled = false;
-        alert("Оплата принята! Теперь вы можете крутить рулетку.");
+        alert("Рулетка активирована! Теперь вы можете крутить.");
     }
 }
 
