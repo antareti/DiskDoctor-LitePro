@@ -1,125 +1,100 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DiskDoctor</title>
-<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-<style>
-body {
-    margin: 0;
-    font-family: 'Roboto', sans-serif;
-    background-color: #121212;
-    color: #e0e0e0;
-}
-header {
-    background-color: #1f1f1f;
-    padding: 20px;
-    text-align: center;
-}
-header img {
-    height: 60px;
-    margin-bottom: 10px;
-}
-header h1 {
-    color: #00ff7f;
-    margin: 0;
-}
-nav a {
-    color: #00ff7f;
-    margin: 0 15px;
-    text-decoration: none;
-    font-weight: bold;
-}
-nav a:hover {
-    text-decoration: underline;
-}
-section {
-    padding: 40px 20px;
-    max-width: 1000px;
-    margin: auto;
-}
-h2 {
-    color: #00ff7f;
-    margin-bottom: 15px;
-}
-p {
-    line-height: 1.6;
-}
-.buttons {
-    margin-top: 20px;
-}
-.buttons a {
-    display: inline-block;
-    padding: 12px 25px;
-    margin-right: 15px;
-    background-color: #00ff7f;
-    color: #121212;
-    font-weight: bold;
-    border-radius: 8px;
-    text-decoration: none;
-    transition: 0.3s;
-}
-.buttons a:hover {
-    background-color: #00cc5a;
-}
-.screenshot img {
-    max-width: 100%;
-    border-radius: 12px;
-    margin-top: 20px;
-}
-footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #1f1f1f;
-    margin-top: 40px;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiskDoctor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Общие стили */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        header {
+            background-color: #1f1f1f;
+            padding: 20px;
+            text-align: center;
+        }
+        header h1 {
+            color: #00ff7f;
+            margin: 0;
+        }
+        nav a {
+            color: #00ff7f;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        h2 {
+            color: #00ff7f;
+            margin-bottom: 15px;
+        }
+        p {
+            line-height: 1.6;
+        }
+        .buttons {
+            margin-top: 20px;
+        }
+        .buttons a {
+            display: inline-block;
+            padding: 12px 25px;
+            margin-right: 15px;
+            background-color: #00ff7f;
+            color: #121212;
+            font-weight: bold;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+        .buttons a:hover {
+            background-color: #00cc5a;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #1f1f1f;
+            margin-top: 40px;
+        }
+    </style>
 </head>
 <body>
-<header>
-    <img src="hackpack_logo.png" alt="DiskDoctor Logo">
-    <h1>DiskDoctor</h1>
-    <nav>
-        <a href="#lite">Lite</a>
-        <a href="#pro">LitePro</a>
-        <a href="#support">Поддержка</a>
-    </nav>
-</header>
+    <header>
+        <h1>DiskDoctor</h1>
+        <nav>
+            <a href="#lite">Lite</a>
+            <a href="#pro">LitePro</a>
+        </nav>
+    </header>
 
-<section id="lite">
-    <h2>DiskDoctor Lite — Бесплатная версия</h2>
-    <p>Быстрый анализ занятого места на диске, очистка мусора и простое управление файлами. Подходит для всех, кто хочет держать диск в порядке без лишних функций.</p>
-    <div class="buttons">
-        <a href="files/DiskDoctor_Lite.exe" download>Скачать бесплатно</a>
-    </div>
-    <div class="screenshot">
-        <img src="8.png" alt="Интерфейс DiskDoctor Lite">
-    </div>
-</section>
+    <section id="lite">
+        <h2>DiskDoctor Lite — Бесплатная версия</h2>
+        <p>Быстрый анализ занятого места на диске, очистка мусора и простое управление файлами. Подходит для всех, кто хочет держать диск в порядке без лишних функций.</p>
+        <div class="buttons">
+            <a href="files/DiskDoctor_Lite.exe" download>Скачать бесплатно</a>
+        </div>
+    </section>
 
-<section id="pro">
-    <h2>DiskDoctor LitePro — Профессиональная версия</h2>
-    <p>Расширенные функции: 3D-графики, статистика, резервное копирование, тёмная тема. Доступно только по подписке.</p>
-    <div class="buttons">
-        <a href="https://example.com/pay" target="_blank">Оплатить и скачать</a>
-    </div>
-    <div class="screenshot">
-        <img src="8.png" alt="Интерфейс DiskDoctor LitePro">
-    </div>
-</section>
+    <section id="pro">
+        <h2>DiskDoctor LitePro — Профессиональная версия</h2>
+        <p>Расширенные функции: 3D-графики, статистика, резервное копирование, тёмная тема. Доступно только по подписке.</p>
+        <div class="buttons">
+            <a href="https://example.com/pay" target="_blank">Оплатить и скачать</a>
+        </div>
+    </section>
 
-<section id="support">
-    <h2>Поддержка</h2>
-    <p>Если у вас возникли вопросы или нужна помощь — пишите нам на почту:</p>
-    <div class="buttons">
-        <a href="mailto:packhack1977@gmail.com">Написать в поддержку</a>
-    </div>
-</section>
-
-<footer>
-    &copy; 2025 DiskDoctor | 
-    <a href="https://github.com/ваш_профиль" target="_blank" style="color:#00ff7f;">GitHub</a>
-</footer>
+    <footer>
+        &copy; 2025 DiskDoctor | <a href="https://github.com/ваш_профиль" target="_blank" style="color:#00ff7f;">GitHub</a>
+    </footer>
 </body>
 </html>
