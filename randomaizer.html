@@ -105,11 +105,26 @@ drawWheel();
 let spinning = false;
 let rotation = 0;
 
+// создаём звук щелчка (без файла — через Web Audio API)
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+function playClick() {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.type = "square";
+  osc.frequency.value = 800;
+  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.1);
+}
+
 document.getElementById("spinBtn").addEventListener("click", () => {
   if (spinning) return;
   spinning = true;
 
-  // выбираем случайный приз, кроме "100$" (последний элемент массива)
+  // выбираем случайный приз, кроме "100$"
   let prizeIndex;
   do {
     prizeIndex = Math.floor(Math.random() * options.length);
@@ -117,16 +132,43 @@ document.getElementById("spinBtn").addEventListener("click", () => {
 
   // угол для остановки
   let stopAngle = (options.length - prizeIndex) * sliceAngle - sliceAngle/2;
-  let spin = 360 * 5 + (stopAngle * 180 / Math.PI); // минимум 5 оборотов
+
+  // случайное количество оборотов (от 5 до 8)
+  let extraSpins = Math.floor(Math.random() * 4) + 5; 
+  let spin = 360 * extraSpins + (stopAngle * 180 / Math.PI); 
+
   rotation += spin;
 
-  canvas.style.transition = "transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67)";
-  canvas.style.transform = `rotate(${rotation}deg)`;
+  let duration = 5000; // 5 секунд
+  let start = null;
+  let lastSector = -1;
 
-  setTimeout(() => {
-    spinning = false;
-    alert("🎁 Ты выиграл: " + options[prizeIndex]);
-  }, 5000);
+  function animateWheel(timestamp) {
+    if (!start) start = timestamp;
+    let progress = (timestamp - start) / duration;
+    if (progress > 1) progress = 1;
+
+    let easeOut = 1 - Math.pow(1 - progress, 3); // плавное замедление
+    let angle = rotation * easeOut;
+
+    canvas.style.transform = `rotate(${angle}deg)`;
+
+    // звук при переходе сектора
+    let currentSector = Math.floor(((angle % 360) / 360) * options.length);
+    if (currentSector !== lastSector) {
+      playClick();
+      lastSector = currentSector;
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(animateWheel);
+    } else {
+      spinning = false;
+      alert("🎁 Ты выиграл: " + options[prizeIndex]);
+    }
+  }
+
+  requestAnimationFrame(animateWheel);
 });
 </script>
 
