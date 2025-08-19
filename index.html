@@ -155,6 +155,48 @@
         text-transform: uppercase;
     }
 
+    iframe {
+        border-radius: 15px;
+        box-shadow: 0 6px 20px rgba(0,255,127,0.6);
+    }
+
+    /* Раздел Приз 100$ */
+    #prize {
+        background: linear-gradient(135deg, #00ff7f, #00cc5a, #00ff7f);
+        color: #121212;
+        text-shadow: 0 0 15px #00ff7f;
+    }
+
+    #prize h2 {
+        font-size: 2.5rem;
+        animation: glow 1.5s infinite alternate;
+    }
+
+    #prize .buttons a {
+        background: linear-gradient(45deg, #fff200, #ff6f00);
+        color: #121212;
+        box-shadow: 0 0 20px #ff6f00, 0 0 40px #fff200;
+        animation: pulse 1.2s infinite;
+    }
+
+    #prize iframe {
+        border: 5px solid #fff200;
+        box-shadow: 0 0 30px #ff6f00, 0 0 60px #fff200;
+        border-radius: 20px;
+    }
+
+    @keyframes glow {
+        0% { text-shadow: 0 0 10px #00ff7f, 0 0 20px #00cc5a; }
+        50% { text-shadow: 0 0 20px #00ff7f, 0 0 40px #00cc5a; }
+        100% { text-shadow: 0 0 10px #00ff7f, 0 0 20px #00cc5a; }
+    }
+
+    @keyframes pulse {
+        0% { transform: scale(1); box-shadow: 0 0 20px #ff6f00, 0 0 40px #fff200; }
+        50% { transform: scale(1.05); box-shadow: 0 0 30px #ff6f00, 0 0 60px #fff200; }
+        100% { transform: scale(1); box-shadow: 0 0 20px #ff6f00, 0 0 40px #fff200; }
+    }
+
     footer {
         text-align: center;
         padding: 25px;
@@ -183,6 +225,7 @@
         <a href="#lite">Lite</a>
         <a href="#better">Улучшенная версия</a>
         <a href="#pro">LitePro</a>
+        <a href="#prize">Приз 100$</a>
     </nav>
 </header>
 
@@ -201,7 +244,6 @@
     <p>Полный контроль над диском, включая глубокий анализ, расширенные настройки очистки и подробные отчеты. Идеально для опытных пользователей и профессионалов.</p>
     <img src="8.png" alt="Улучшенная версия" class="section-img">
     <div class="buttons">
-        <!-- ССЫЛКА ОБНОВЛЕНА, ТЕПЕРЬ ОНА ВЕДЕТ НА about-us.html -->
         <a href="about-us.html" target="_blank">Узнать больше</a>
     </div>
 </section>
@@ -213,6 +255,15 @@
     <div class="label">Платно</div>
     <div class="buttons">
         <a href="https://t.me/+r_UnHx57J0JhYzI6" target="_blank">💬 Написать в Telegram для покупки</a>
+    </div>
+</section>
+
+<section id="prize">
+    <h2>Приз 100$ — Испытай удачу!</h2>
+    <p>Нажми на кнопку ниже и получи свой шанс выиграть 100$ прямо сейчас!</p>
+    <iframe src="randomaizer.html" style="width:100%; max-width:800px; height:600px;"></iframe>
+    <div class="buttons">
+        <a href="randomaizer.html" target="_blank">Открыть в новом окне</a>
     </div>
 </section>
 
