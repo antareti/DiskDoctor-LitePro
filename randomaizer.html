@@ -1,100 +1,117 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Платная рулетка</title>
-  <style>
-    body { font-family: Arial, sans-serif; text-align: center; background: #111; color: #fff; }
-    #wheelContainer { position: relative; width: 300px; height: 300px; margin: 30px auto; }
-    #wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #fff; }
-    #pointer {
-      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
-      width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent;
-      border-bottom: 30px solid red;
-    }
-    #spin { margin-top: 20px; padding: 10px 20px; font-size: 18px; cursor: pointer; }
-    #codeInput { padding: 5px; font-size: 16px; }
-    #status { margin-top: 20px; font-size: 20px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Рулетка</title>
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background: #222;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+  .wheel-container {
+    position: relative;
+    width: 400px;
+    height: 400px;
+  }
+  .wheel {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 8px solid #333;
+    position: relative;
+    transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
+  }
+  .pointer {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0; 
+    height: 0; 
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 30px solid yellow;
+  }
+  #spinBtn {
+    margin-top: 30px;
+    padding: 10px 20px;
+    font-size: 20px;
+    border: none;
+    border-radius: 10px;
+    background: crimson;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  #spinBtn:hover {
+    background: darkred;
+  }
+</style>
 </head>
 <body>
-  <h1>Рулетка — шанс выиграть 100$</h1>
-  <p>Введите код доступа, чтобы играть</p>
-  <input type="text" id="codeInput" placeholder="Введите код">
-  <button onclick="activate()">Активировать</button>
-  <div id="wheelContainer">
-    <div id="pointer"></div>
-    <canvas id="wheel" width="300" height="300"></canvas>
-  </div>
-  <button id="spin" onclick="spin()" disabled>Крутить</button>
-  <div id="status"></div>
 
-  <script>
-    let activated = false;
-    let attempts = 0;
-    const options = Array(10).fill("LOSE"); // все сектора "LOSE"
-    const colors = ["#e74c3c","#2ecc71","#3498db","#9b59b6","#f39c12",
-                    "#1abc9c","#e67e22","#34495e","#d35400","#7f8c8d"];
+<h2>🎰 Рулетка — шанс 0%</h2>
+<div class="wheel-container">
+  <div class="pointer"></div>
+  <canvas id="wheel" width="400" height="400"></canvas>
+</div>
+<button id="spinBtn">Крутить</button>
 
-    const canvas = document.getElementById("wheel");
-    const ctx = canvas.getContext("2d");
-    const size = canvas.width;
-    const radius = size/2;
-    const slice = 2 * Math.PI / options.length;
-    let angle = 0;
-    let spinning = false;
+<script>
+const canvas = document.getElementById("wheel");
+const ctx = canvas.getContext("2d");
+const size = canvas.width;
+const radius = size / 2;
+const options = ["LOSE","LOSE","LOSE","LOSE","LOSE","LOSE","LOSE","LOSE"];
+const sliceAngle = 2 * Math.PI / options.length;
 
-    function drawWheel() {
-      ctx.clearRect(0,0,size,size);
-      for (let i=0; i<options.length; i++) {
-        ctx.beginPath();
-        ctx.moveTo(radius,radius);
-        ctx.fillStyle = colors[i % colors.length];
-        ctx.arc(radius,radius,radius,i*slice+angle,(i+1)*slice+angle);
-        ctx.fill();
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate(i*slice + slice/2 + angle);
-        ctx.fillStyle = "#fff";
-        ctx.font = "16px Arial";
-        ctx.textAlign = "right";
-        ctx.fillText(options[i], radius-10, 5);
-        ctx.restore();
-      }
-    }
-    drawWheel();
+// рисуем рулетку
+function drawWheel() {
+  for (let i = 0; i < options.length; i++) {
+    ctx.beginPath();
+    ctx.moveTo(radius, radius);
+    ctx.arc(radius, radius, radius, i * sliceAngle, (i + 1) * sliceAngle);
+    ctx.fillStyle = i % 2 === 0 ? "#d32f2f" : "#000"; // красный/черный
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.stroke();
+    // текст
+    ctx.save();
+    ctx.translate(radius, radius);
+    ctx.rotate(i * sliceAngle + sliceAngle / 2);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#fff";
+    ctx.font = "20px Arial";
+    ctx.fillText(options[i], radius - 10, 10);
+    ctx.restore();
+  }
+}
 
-    function activate() {
-      activated = true; // теперь всегда активируется
-      document.getElementById("spin").disabled = false;
-      document.getElementById("status").innerText = "Код принят! Можете играть сколько угодно.";
-    }
+drawWheel();
 
-    function spin() {
-      if (!activated || spinning) return;
-      spinning = true;
-      attempts++;
-      let spinAngle = Math.random() * 360 + 1440;
-      let duration = 4000;
-      let start = null;
+let spinning = false;
+let rotation = 0;
 
-      function animate(timestamp) {
-        if (!start) start = timestamp;
-        let progress = timestamp - start;
-        let t = Math.min(progress / duration, 1);
-        let eased = 1 - Math.pow(1-t, 3);
-        angle = (spinAngle * eased) * Math.PI/180;
-        drawWheel();
-        if (t < 1) {
-          requestAnimationFrame(animate);
-        } else {
-          spinning = false;
-          document.getElementById("status").innerText = 
-            `Попытка ${attempts}: LOSE 😢`;
-        }
-      }
-      requestAnimationFrame(animate);
-    }
-  </script>
+document.getElementById("spinBtn").addEventListener("click", () => {
+  if (spinning) return;
+  spinning = true;
+  let spin = Math.floor(Math.random() * 360) + 360 * 5; // минимум 5 оборотов
+  rotation += spin;
+  canvas.style.transition = "transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67)";
+  canvas.style.transform = `rotate(${rotation}deg)`;
+  setTimeout(() => {
+    spinning = false;
+    alert("Результат: LOSE ❌");
+  }, 5000);
+});
+</script>
+
 </body>
 </html>
