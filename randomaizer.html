@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Приз 100$</title>
+<title>Приз 100$ — Рулетка</title>
 <style>
     body {
         background: linear-gradient(135deg, #00ff7f, #00cc5a);
@@ -25,6 +25,27 @@
         animation: glow 1.5s infinite alternate;
     }
 
+    #roulette {
+        width: 200px;
+        height: 50px;
+        border: 5px solid #fff200;
+        border-radius: 10px;
+        box-shadow: 0 0 20px #ff6f00, 0 0 40px #fff200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        margin-bottom: 30px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    #roulette span {
+        position: absolute;
+        width: 100%;
+        transition: transform 0.5s ease-out;
+    }
+
     button {
         padding: 20px 40px;
         font-size: 1.5rem;
@@ -42,13 +63,6 @@
         box-shadow: 0 0 30px #ff6f00, 0 0 60px #fff200;
     }
 
-    #result {
-        margin-top: 30px;
-        font-size: 1.8rem;
-        min-height: 40px;
-        text-shadow: 0 0 10px #fff200;
-    }
-
     @keyframes glow {
         0% { text-shadow: 0 0 10px #fff200, 0 0 20px #ff6f00; }
         50% { text-shadow: 0 0 20px #fff200, 0 0 40px #ff6f00; }
@@ -58,23 +72,32 @@
 </head>
 <body>
 
-<h1>Приз 100$</h1>
-<button onclick="tryLuck()">Испытай удачу</button>
-<div id="result"></div>
+<h1>Приз 100$ — Рулетка</h1>
+<div id="roulette"><span>🎲</span></div>
+<button onclick="spinRoulette()">Испытай удачу</button>
 
 <script>
-function tryLuck() {
-    const resultDiv = document.getElementById('result');
-    resultDiv.textContent = "🎲 Генерируем число...";
-    
-    setTimeout(() => {
-        const chance = Math.floor(Math.random() * 100) + 1; // 1-100
-        if (chance <= 5) {
-            resultDiv.textContent = "🎉 Поздравляем! Ты выиграл 100$!";
-        } else {
-            resultDiv.textContent = "😢 Попробуй ещё раз!";
+function spinRoulette() {
+    const roulette = document.getElementById('roulette').querySelector('span');
+    roulette.textContent = "🎲"; // Сброс
+    let spins = 20; // количество вращений
+    let count = 0;
+
+    const spinInterval = setInterval(() => {
+        count++;
+        const chance = Math.floor(Math.random() * 100) + 1;
+        // Массив вариантов для показа во время кручения
+        const symbols = ["🎲","💰","🍀","🔔","💎","🎁","⭐"];
+        roulette.textContent = symbols[Math.floor(Math.random()*symbols.length)];
+        if (count >= spins) {
+            clearInterval(spinInterval);
+            if (chance <= 5) {
+                roulette.textContent = "🎉 100$!";
+            } else {
+                roulette.textContent = "😢 Попробуй ещё раз!";
+            }
         }
-    }, 1000); // имитация анимации генерации
+    }, 100); // скорость вращения
 }
 </script>
 
