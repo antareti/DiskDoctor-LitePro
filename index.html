@@ -6,7 +6,6 @@
     <title>DiskDoctor</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* Общие стили */
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -17,6 +16,10 @@
             background-color: #1f1f1f;
             padding: 20px;
             text-align: center;
+        }
+        header img {
+            height: 60px;
+            margin-bottom: 10px;
         }
         header h1 {
             color: #00ff7f;
@@ -60,6 +63,15 @@
         .buttons a:hover {
             background-color: #00cc5a;
         }
+        .screenshot {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .screenshot img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 255, 127, 0.3);
+        }
         footer {
             text-align: center;
             padding: 20px;
@@ -70,6 +82,7 @@
 </head>
 <body>
     <header>
+        <img src="hackpack_logo.png" alt="DiskDoctor Logo">
         <h1>DiskDoctor</h1>
         <nav>
             <a href="#lite">Lite</a>
@@ -84,6 +97,9 @@
         <div class="buttons">
             <a href="files/DiskDoctor_Lite.exe" download>Скачать бесплатно</a>
         </div>
+        <div class="screenshot">
+            <img src="8.png" alt="Интерфейс DiskDoctor Lite">
+        </div>
     </section>
 
     <section id="pro">
@@ -92,13 +108,16 @@
         <div class="buttons">
             <a href="https://example.com/pay" target="_blank">Оплатить и скачать</a>
         </div>
+        <div class="screenshot">
+            <img src="8.png" alt="Интерфейс DiskDoctor Pro">
+        </div>
     </section>
 
     <section id="support">
         <h2>Поддержка</h2>
-        <p>Если у вас есть вопросы, предложения или вы нашли ошибку — свяжитесь с нами:</p>
+        <p>Если у вас возникли вопросы или нужна помощь — пишите нам на почту:</p>
         <div class="buttons">
-            <a href="mailto:packhack1977@gmail.com">Написать на Email</a>
+            <a href="mailto:packhack1977@gmail.com">Написать в поддержку</a>
         </div>
     </section>
 
