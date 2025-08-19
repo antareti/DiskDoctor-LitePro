@@ -1,94 +1,117 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Приз 100$ — Платная рулетка</title>
-<style>
-body {background:linear-gradient(135deg,#00ff7f,#00cc5a); color:#121212; font-family:'Roboto',sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; margin:0; text-align:center;}
-h1{font-size:2.5rem;margin-bottom:10px;text-shadow:0 0 15px #fff200,0 0 30px #ff6f00;animation:glow 1.5s infinite alternate;}
-p.tip{margin-bottom:30px;color:#fff;font-size:1rem;}
-#roulette{width:200px;height:50px;border:5px solid #fff200;border-radius:10px;box-shadow:0 0 20px #ff6f00,0 0 40px #fff200;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:20px;overflow:hidden;position:relative;}
-#roulette span{position:absolute;width:100%;transition:transform 0.5s ease-out;}
-button{padding:15px 30px;font-size:1.2rem;margin:5px;border-radius:10px;border:none;outline:none;background:linear-gradient(45deg,#fff200,#ff6f00);cursor:pointer;box-shadow:0 0 20px #ff6f00,0 0 40px #fff200;transition: transform 0.3s, box-shadow 0.3s;}
-button:hover{transform:scale(1.05);box-shadow:0 0 30px #ff6f00,0 0 60px #fff200;}
-@keyframes glow{0%{text-shadow:0 0 10px #fff200,0 0 20px #ff6f00;}50%{text-shadow:0 0 20px #fff200,0 0 40px #ff6f00;}100%{text-shadow:0 0 10px #fff200,0 0 20px #ff6f00;}}
-.modal{display:none;position:fixed;z-index:100;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.75);display:flex;align-items:center;justify-content:center;}
-.modal-content{background:#121212;padding:30px;border-radius:15px;text-align:center;color:#fff;max-width:400px;width:90%;box-shadow:0 0 30px #00ff7f;}
-.modal input{width:80%;padding:10px;font-size:1rem;margin:15px 0;border-radius:10px;border:none;}
-</style>
+  <meta charset="UTF-8">
+  <title>Платная рулетка</title>
+  <style>
+    body { font-family: Arial, sans-serif; text-align: center; background: #111; color: #fff; }
+    #wheelContainer { position: relative; width: 300px; height: 300px; margin: 30px auto; }
+    #wheel { width: 100%; height: 100%; border-radius: 50%; border: 8px solid #fff; }
+    #pointer {
+      position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+      width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent;
+      border-bottom: 30px solid red;
+    }
+    #spin { margin-top: 20px; padding: 10px 20px; font-size: 18px; cursor: pointer; }
+    #codeInput { padding: 5px; font-size: 16px; }
+    #status { margin-top: 20px; font-size: 20px; }
+  </style>
 </head>
 <body>
+  <h1>Рулетка — шанс выиграть 100$</h1>
+  <p>Введите код доступа, чтобы играть (5 попыток максимум)</p>
+  <input type="text" id="codeInput" placeholder="Введите код">
+  <button onclick="activate()">Активировать</button>
+  <div id="wheelContainer">
+    <div id="pointer"></div>
+    <canvas id="wheel" width="300" height="300"></canvas>
+  </div>
+  <button id="spin" onclick="spin()" disabled>Крутить</button>
+  <div id="status"></div>
 
-<h1>Приз 100$ — Платная рулетка</h1>
-<p class="tip">Код вы получите после оплаты в Telegram: <a href="https://t.me/+r_UnHx57J0JhYzI6" target="_blank">Перейти в Telegram</a></p>
+  <script>
+    const eternalCode = "HACKPACKANTARETI1977";
+    let activated = false;
+    let attempts = 0;
+    const maxAttempts = 5;
+    let angle = 0;
+    let spinning = false;
 
-<div id="roulette"><span>🎲</span></div>
-<p id="spinsInfo"></p>
+    const options = Array(10).fill("LOSE"); // все сектора "LOSE"
+    const colors = ["#e74c3c","#2ecc71","#3498db","#9b59b6","#f39c12",
+                    "#1abc9c","#e67e22","#34495e","#d35400","#7f8c8d"];
 
-<button onclick="openModal()">Активировать рулетку</button>
-<button id="spinButton" onclick="spinRoulette()" disabled>Испытай удачу</button>
+    const canvas = document.getElementById("wheel");
+    const ctx = canvas.getContext("2d");
+    const size = canvas.width;
+    const radius = size/2;
+    const slice = 2 * Math.PI / options.length;
 
-<div id="codeModal" class="modal">
-<div class="modal-content">
-<h2>Введите код доступа</h2>
-<input type="text" id="accessCodeModal" placeholder="Код">
-<br>
-<button onclick="checkCodeModal()">Подтвердить</button>
-</div>
-</div>
-
-<script>
-const correctCode = "HACKPACKANTARETI1977"; 
-let spinsLeft = 5;
-let paid = localStorage.getItem("rouletteActivated") === "true";
-if(paid) document.getElementById("spinButton").disabled = false;
-updateSpinsInfo();
-
-function openModal(){ document.getElementById('codeModal').style.display='flex'; }
-
-function checkCodeModal(){
-    const code = document.getElementById('accessCodeModal').value.trim();
-    if(code === correctCode && !localStorage.getItem("usedCode")){
-        paid = true;
-        localStorage.setItem("rouletteActivated","true");
-        localStorage.setItem("usedCode","true");
-        document.getElementById('spinButton').disabled = false;
-        document.getElementById('codeModal').style.display='none';
-        alert("Код верный! Вы можете крутить рулетку 5 раз.");
-        updateSpinsInfo();
-    } else {
-        alert("Код неверный или уже использован!");
+    function drawWheel() {
+      ctx.clearRect(0,0,size,size);
+      for (let i=0; i<options.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(radius,radius);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.arc(radius,radius,radius,i*slice+angle,(i+1)*slice+angle);
+        ctx.fill();
+        ctx.save();
+        ctx.translate(radius, radius);
+        ctx.rotate(i*slice + slice/2 + angle);
+        ctx.fillStyle = "#fff";
+        ctx.font = "16px Arial";
+        ctx.textAlign = "right";
+        ctx.fillText(options[i], radius-10, 5);
+        ctx.restore();
+      }
     }
-}
 
-function spinRoulette(){
-    if(!paid) return alert("Сначала активируйте рулетку кодом!");
-    if(spinsLeft<=0) return alert("Вы использовали все 5 попыток!");
-    spinsLeft--;
-    updateSpinsInfo();
+    drawWheel();
 
-    const roulette = document.getElementById('roulette').querySelector('span');
-    roulette.textContent="🎲";
-    let spins=20, count=0;
+    function activate() {
+      const inputCode = document.getElementById("codeInput").value.trim();
+      if (inputCode === eternalCode) {
+        activated = true;
+        document.getElementById("spin").disabled = false;
+        document.getElementById("status").innerText = "Код принят! У вас есть 5 попыток.";
+      } else {
+        document.getElementById("status").innerText = "Неверный код!";
+      }
+    }
 
-    const spinInterval = setInterval(()=>{
-        count++;
-        const chance=Math.floor(Math.random()*100)+1;
-        const symbols=["🎲","💰","🍀","🔔","💎","☢","⭐"];
-        roulette.textContent=symbols[Math.floor(Math.random()*symbols.length)];
-        if(count>=spins){
-            clearInterval(spinInterval);
-            if(chance<=5) roulette.textContent="🎉 100$!";
-            else roulette.textContent="😢 Попробуй ещё раз!";
+    function spin() {
+      if (!activated || spinning) return;
+      if (attempts >= maxAttempts) {
+        document.getElementById("status").innerText = "Ваши 5 попыток закончились!";
+        document.getElementById("spin").disabled = true;
+        return;
+      }
+      spinning = true;
+      attempts++;
+      let spinAngle = Math.random() * 360 + 1440; // минимум 4 оборота
+      let duration = 4000;
+      let start = null;
+
+      function animate(timestamp) {
+        if (!start) start = timestamp;
+        let progress = timestamp - start;
+        let t = Math.min(progress / duration, 1);
+        let eased = 1 - Math.pow(1-t, 3);
+        angle = (spinAngle * eased) * Math.PI/180;
+        drawWheel();
+        if (t < 1) {
+          requestAnimationFrame(animate);
+        } else {
+          spinning = false;
+          document.getElementById("status").innerText = 
+            `Попытка ${attempts}/${maxAttempts}: LOSE 😢`;
+          if (attempts >= maxAttempts) {
+            document.getElementById("spin").disabled = true;
+          }
         }
-    },100);
-}
-
-function updateSpinsInfo(){
-    if(paid) document.getElementById("spinsInfo").textContent = "Осталось попыток: "+spinsLeft;
-}
-</script>
-
+      }
+      requestAnimationFrame(animate);
+    }
+  </script>
 </body>
 </html>
