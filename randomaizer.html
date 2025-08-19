@@ -20,9 +20,15 @@
 
     h1 {
         font-size: 2.5rem;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         text-shadow: 0 0 15px #fff200, 0 0 30px #ff6f00;
         animation: glow 1.5s infinite alternate;
+    }
+
+    p.tip {
+        margin-bottom: 30px;
+        color: #fff;
+        font-size: 1rem;
     }
 
     #roulette {
@@ -46,16 +52,13 @@
         transition: transform 0.5s ease-out;
     }
 
-    input, button {
+    button {
         padding: 15px 30px;
         font-size: 1.2rem;
         margin: 5px;
         border-radius: 10px;
         border: none;
         outline: none;
-    }
-
-    button {
         background: linear-gradient(45deg, #fff200, #ff6f00);
         cursor: pointer;
         box-shadow: 0 0 20px #ff6f00, 0 0 40px #fff200;
@@ -72,36 +75,90 @@
         50% { text-shadow: 0 0 20px #fff200, 0 0 40px #ff6f00; }
         100% { text-shadow: 0 0 10px #fff200, 0 0 20px #ff6f00; }
     }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 100;
+        left: 0; top: 0;
+        width: 100%; height: 100%;
+        background-color: rgba(0,0,0,0.75);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: #121212;
+        padding: 30px;
+        border-radius: 15px;
+        text-align: center;
+        color: #fff;
+        max-width: 400px;
+        width: 90%;
+        box-shadow: 0 0 30px #00ff7f;
+    }
+
+    .modal input {
+        width: 80%;
+        padding: 10px;
+        font-size: 1rem;
+        margin: 15px 0;
+        border-radius: 10px;
+        border: none;
+    }
+
 </style>
 </head>
 <body>
 
 <h1>Приз 100$ — Платная рулетка</h1>
+<p class="tip">Код доступа вы получаете после оплаты в нашей Telegram-группе: <a href="https://t.me/+r_UnHx57J0JhYzI6" target="_blank">Перейти в Telegram</a></p>
+
 <div id="roulette"><span>🎲</span></div>
 
-<!-- Проверка кода -->
-<input type="text" id="accessCode" placeholder="Введите код доступа">
-<button id="checkCodeButton" onclick="checkCode()">Активировать рулетку</button>
+<!-- Кнопка открытия модального окна -->
+<button onclick="openModal()">Активировать рулетку</button>
 
+<!-- Кнопка запуска рулетки -->
 <button id="spinButton" onclick="spinRoulette()" disabled>Испытай удачу</button>
 
-<script>
-const correctCode = "UQAtJ7867sv8nZ3n4eRzp8hWSPSiPKH6m9G87bAANBCHWURO";
-let paid = false;
+<!-- Модальное окно -->
+<div id="codeModal" class="modal">
+    <div class="modal-content">
+        <h2>Введите код доступа</h2>
+        <input type="text" id="accessCodeModal" placeholder="Код">
+        <br>
+        <button onclick="checkCodeModal()">Подтвердить</button>
+    </div>
+</div>
 
-function checkCode() {
-    const userCode = document.getElementById('accessCode').value.trim();
-    if(userCode === correctCode) {
+<script>
+const correctCode = "HACKPACKANTARETI1977";
+let paid = false;
+let spinsLeft = 5; // максимум 5 запусков
+
+function openModal() {
+    document.getElementById('codeModal').style.display = 'flex';
+}
+
+function checkCodeModal() {
+    const code = document.getElementById('accessCodeModal').value.trim();
+    if(code === correctCode) {
         paid = true;
         document.getElementById('spinButton').disabled = false;
-        alert("Код верный! Рулетка активирована.");
+        document.getElementById('codeModal').style.display = 'none';
+        alert("Код верный! Рулетка активирована. Вы можете крутить 5 раз.");
     } else {
         alert("Неверный код! Попробуйте снова.");
     }
 }
 
 function spinRoulette() {
-    if (!paid) return alert("Сначала активируйте рулетку кодом!");
+    if(!paid) return alert("Сначала активируйте рулетку кодом!");
+    if(spinsLeft <= 0) return alert("Вы использовали все 5 попыток!");
+    
+    spinsLeft--;
     const roulette = document.getElementById('roulette').querySelector('span');
     roulette.textContent = "🎲";
     let spins = 20;
@@ -112,9 +169,9 @@ function spinRoulette() {
         const chance = Math.floor(Math.random() * 100) + 1;
         const symbols = ["🎲","💰","🍀","🔔","💎","☢","⭐"];
         roulette.textContent = symbols[Math.floor(Math.random()*symbols.length)];
-        if (count >= spins) {
+        if(count >= spins) {
             clearInterval(spinInterval);
-            if (chance <= 5) {
+            if(chance <= 5) {
                 roulette.textContent = "🎉 100$!";
             } else {
                 roulette.textContent = "😢 Попробуй ещё раз!";
