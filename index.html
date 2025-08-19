@@ -66,36 +66,6 @@
             background-color: #1f1f1f;
             margin-top: 40px;
         }
-        /* Стили формы */
-        form {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            max-width: 600px;
-        }
-        input, textarea {
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            font-size: 16px;
-        }
-        textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-        button {
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            background-color: #00ff7f;
-            color: #121212;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-        button:hover {
-            background-color: #00cc5a;
-        }
     </style>
 </head>
 <body>
@@ -114,8 +84,6 @@
         <div class="buttons">
             <a href="files/DiskDoctor_Lite.exe" download>Скачать бесплатно</a>
         </div>
-        <!-- пример картинки -->
-        <img src="images/lite_interface.png" alt="Интерфейс DiskDoctor Lite" style="max-width:100%; border-radius:12px; margin-top:20px;">
     </section>
 
     <section id="pro">
@@ -124,26 +92,19 @@
         <div class="buttons">
             <a href="https://example.com/pay" target="_blank">Оплатить и скачать</a>
         </div>
-        <!-- пример картинки -->
-        <img src="images/pro_interface.png" alt="Интерфейс DiskDoctor LitePro" style="max-width:100%; border-radius:12px; margin-top:20px;">
     </section>
 
     <section id="support">
         <h2>Поддержка</h2>
-        <p>Возникли вопросы или предложения? Свяжитесь с нами:</p>
-        <form onsubmit="alert('Спасибо! Ваше сообщение отправлено.'); return false;">
-            <input type="text" name="name" placeholder="Ваше имя" required>
-            <input type="email" name="email" placeholder="Ваш Email" required>
-            <textarea name="message" placeholder="Ваше сообщение" required></textarea>
-            <button type="submit">Отправить</button>
-        </form>
-        <p style="margin-top:20px;">Или напишите напрямую: 
-            <a href="mailto:support@diskdoctor.com" style="color:#00ff7f;">support@diskdoctor.com</a>
-        </p>
+        <p>Если у вас есть вопросы, предложения или вы нашли ошибку — свяжитесь с нами:</p>
+        <div class="buttons">
+            <a href="mailto:packhack1977@gmail.com">Написать на Email</a>
+        </div>
     </section>
 
     <footer>
-        &copy; 2025 DiskDoctor | <a href="https://github.com/ваш_профиль" target="_blank" style="color:#00ff7f;">GitHub</a>
+        &copy; 2025 DiskDoctor | 
+        <a href="https://github.com/ваш_профиль" target="_blank" style="color:#00ff7f;">GitHub</a>
     </footer>
 </body>
 </html>
