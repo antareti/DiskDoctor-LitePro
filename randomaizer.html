@@ -46,17 +46,20 @@
         transition: transform 0.5s ease-out;
     }
 
-    button {
-        padding: 20px 40px;
-        font-size: 1.5rem;
+    input, button {
+        padding: 15px 30px;
+        font-size: 1.2rem;
+        margin: 5px;
+        border-radius: 10px;
         border: none;
-        border-radius: 15px;
+        outline: none;
+    }
+
+    button {
         background: linear-gradient(45deg, #fff200, #ff6f00);
-        color: #121212;
         cursor: pointer;
         box-shadow: 0 0 20px #ff6f00, 0 0 40px #fff200;
         transition: transform 0.3s, box-shadow 0.3s;
-        margin: 5px;
     }
 
     button:hover {
@@ -76,21 +79,29 @@
 <h1>Приз 100$ — Платная рулетка</h1>
 <div id="roulette"><span>🎲</span></div>
 
-<!-- Кнопки оплаты и запуска рулетки -->
-<button id="payButton" onclick="payForSpin()">Оплатить 5$</button>
+<!-- Проверка кода -->
+<input type="text" id="accessCode" placeholder="Введите код доступа">
+<button id="checkCodeButton" onclick="checkCode()">Активировать рулетку</button>
+
 <button id="spinButton" onclick="spinRoulette()" disabled>Испытай удачу</button>
 
 <script>
+const correctCode = "UQAtJ7867sv8nZ3n4eRzp8hWSPSiPKH6m9G87bAANBCHWURO";
 let paid = false;
 
-function payForSpin() {
-    alert("Для кручения рулетки переведите 5$ на Payeer:\n\nP1126451251\n\nПосле перевода нажмите OK.");
-    paid = true;
-    document.getElementById("spinButton").disabled = false;
+function checkCode() {
+    const userCode = document.getElementById('accessCode').value.trim();
+    if(userCode === correctCode) {
+        paid = true;
+        document.getElementById('spinButton').disabled = false;
+        alert("Код верный! Рулетка активирована.");
+    } else {
+        alert("Неверный код! Попробуйте снова.");
+    }
 }
 
 function spinRoulette() {
-    if (!paid) return alert("Сначала оплатите 5$!");
+    if (!paid) return alert("Сначала активируйте рулетку кодом!");
     const roulette = document.getElementById('roulette').querySelector('span');
     roulette.textContent = "🎲";
     let spins = 20;
@@ -99,7 +110,7 @@ function spinRoulette() {
     const spinInterval = setInterval(() => {
         count++;
         const chance = Math.floor(Math.random() * 100) + 1;
-        const symbols = ["🎲","💰","🍀","🔔","💎","🎁","⭐"];
+        const symbols = ["🎲","💰","🍀","🔔","💎","☢","⭐"];
         roulette.textContent = symbols[Math.floor(Math.random()*symbols.length)];
         if (count >= spins) {
             clearInterval(spinInterval);
