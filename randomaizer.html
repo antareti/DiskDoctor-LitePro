@@ -20,14 +20,6 @@
     width: 400px;
     height: 400px;
   }
-  .wheel {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    border: 8px solid #333;
-    position: relative;
-    transition: transform 4s cubic-bezier(0.17, 0.67, 0.83, 0.67);
-  }
   .pointer {
     position: absolute;
     top: -30px;
@@ -57,7 +49,7 @@
 </head>
 <body>
 
-<h2>🎰 Рулетка — шанс 0%</h2>
+<h2>🎰 Рулетка с призами</h2>
 <div class="wheel-container">
   <div class="pointer"></div>
   <canvas id="wheel" width="400" height="400"></canvas>
@@ -69,7 +61,21 @@ const canvas = document.getElementById("wheel");
 const ctx = canvas.getContext("2d");
 const size = canvas.width;
 const radius = size / 2;
-const options = ["LOSE","LOSE","LOSE","LOSE","LOSE","LOSE","LOSE","LOSE"];
+
+// список призов (последний — 100$, он никогда не выпадет)
+const options = [
+  "10 вращений",
+  "50 токенов",
+  "5 токенов",
+  "Скидка 20%",
+  "25 токенов",
+  "Бонус-игра",
+  "15 токенов",
+  "Сюрприз",
+  "30 токенов",
+  "💰 100$"
+];
+
 const sliceAngle = 2 * Math.PI / options.length;
 
 // рисуем рулетку
@@ -88,7 +94,7 @@ function drawWheel() {
     ctx.rotate(i * sliceAngle + sliceAngle / 2);
     ctx.textAlign = "right";
     ctx.fillStyle = "#fff";
-    ctx.font = "20px Arial";
+    ctx.font = "18px Arial";
     ctx.fillText(options[i], radius - 10, 10);
     ctx.restore();
   }
@@ -102,13 +108,24 @@ let rotation = 0;
 document.getElementById("spinBtn").addEventListener("click", () => {
   if (spinning) return;
   spinning = true;
-  let spin = Math.floor(Math.random() * 360) + 360 * 5; // минимум 5 оборотов
+
+  // выбираем случайный приз, кроме "100$" (последний элемент массива)
+  let prizeIndex;
+  do {
+    prizeIndex = Math.floor(Math.random() * options.length);
+  } while (options[prizeIndex] === "💰 100$");
+
+  // угол для остановки
+  let stopAngle = (options.length - prizeIndex) * sliceAngle - sliceAngle/2;
+  let spin = 360 * 5 + (stopAngle * 180 / Math.PI); // минимум 5 оборотов
   rotation += spin;
+
   canvas.style.transition = "transform 5s cubic-bezier(0.17, 0.67, 0.83, 0.67)";
   canvas.style.transform = `rotate(${rotation}deg)`;
+
   setTimeout(() => {
     spinning = false;
-    alert("Результат: LOSE ❌");
+    alert("🎁 Ты выиграл: " + options[prizeIndex]);
   }, 5000);
 });
 </script>
