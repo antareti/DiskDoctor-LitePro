@@ -1,176 +1,367 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Рулетка</title>
-<style>
-  body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100vh;
-    background: #222;
-    color: #fff;
-    font-family: Arial, sans-serif;
-  }
-  .wheel-container {
-    position: relative;
-    width: 400px;
-    height: 400px;
-  }
-  .pointer {
-    position: absolute;
-    top: -30px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0; 
-    height: 0; 
-    border-left: 20px solid transparent;
-    border-right: 20px solid transparent;
-    border-bottom: 30px solid yellow;
-  }
-  #spinBtn {
-    margin-top: 30px;
-    padding: 10px 20px;
-    font-size: 20px;
-    border: none;
-    border-radius: 10px;
-    background: crimson;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  #spinBtn:hover {
-    background: darkred;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hacker 3D Interface — #FF4500</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --accent:#FF4500; /* ярко-оранжевый */
+      --bg:#0b0b0f;
+      --bg-soft:#0f1117;
+      --fg:#e6e6e6;
+      --muted:#9aa4b2;
+      --glass: rgba(255,69,0,0.08);
+      --glass-strong: rgba(255,69,0,0.15);
+      --shadow: 0 10px 30px rgba(255,69,0,0.15), 0 2px 10px rgba(0,0,0,0.5);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      color:var(--fg);
+      background: radial-gradient(1200px 600px at 70% -10%, rgba(255,69,0,0.15), transparent 60%),
+                  radial-gradient(800px 500px at -20% 90%, rgba(255,69,0,0.12), transparent 55%),
+                  var(--bg);
+      overflow-x:hidden;
+    }
+
+    /* ===== Animated grid backdrop ===== */
+    .grid-bg{
+      position:fixed; inset:0; pointer-events:none; z-index:-2;
+      background: linear-gradient(transparent 24px, rgba(255,255,255,0.04) 25px),
+                  linear-gradient(90deg, transparent 24px, rgba(255,255,255,0.04) 25px);
+      background-size: 25px 25px;
+      transform: perspective(900px) rotateX(55deg) translateY(-15vh);
+      filter: drop-shadow(0 0 10px rgba(255,69,0,0.25));
+      animation: gridFloat 14s ease-in-out infinite alternate;
+    }
+    @keyframes gridFloat{ to{ transform: perspective(900px) rotateX(60deg) translateY(-12vh) translateX(2vw);} }
+
+    /* ===== Matrix rain canvas ===== */
+    canvas#rain{ position:fixed; inset:0; z-index:-3; opacity:.35; }
+
+    /* ===== Header / Hero ===== */
+    header{
+      position:relative; padding: clamp(24px, 6vw, 64px) 6vw 10px; display:flex; align-items:center; justify-content:space-between;
+    }
+    .logo{
+      display:flex; align-items:center; gap:12px; text-decoration:none; color:var(--fg);
+      transform-style:preserve-3d; perspective:1000px;
+    }
+    .cube{
+      width:34px; height:34px; position:relative; transform-style:preserve-3d; animation: spin 8s linear infinite;
+      filter: drop-shadow(0 6px 14px rgba(255,69,0,0.35));
+    }
+    .cube span{ position:absolute; inset:0; background:linear-gradient(135deg, var(--accent), #ff7b3a);
+      border:1px solid rgba(255,69,0,0.5);
+      opacity:.9; box-shadow: inset 0 0 20px rgba(0,0,0,0.3);
+    }
+    .cube .f{ transform: translateZ(17px); }
+    .cube .b{ transform: rotateY(180deg) translateZ(17px);} 
+    .cube .l{ transform: rotateY(-90deg) translateZ(17px);} 
+    .cube .r{ transform: rotateY(90deg) translateZ(17px);} 
+    .cube .t{ transform: rotateX(90deg) translateZ(17px);} 
+    .cube .d{ transform: rotateX(-90deg) translateZ(17px);} 
+    @keyframes spin{ from{ transform: rotateX(0) rotateY(0); } to{ transform: rotateX(360deg) rotateY(360deg);} }
+
+    .brand{ font-weight:800; letter-spacing:.08em; text-transform:uppercase; font-size: clamp(16px, 2.6vw, 24px); opacity:.95 }
+
+    .actions{ display:flex; gap:12px; }
+    .btn{
+      position:relative; border:1px solid rgba(255,69,0,0.5); background:var(--glass); color:var(--fg);
+      padding:12px 16px; border-radius:14px; cursor:pointer; backdrop-filter: blur(6px);
+      text-decoration:none; user-select:none; transform-style:preserve-3d; transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease;
+      box-shadow: var(--shadow);
+    }
+    .btn:hover{ transform: translateY(-2px) translateZ(10px); box-shadow: 0 14px 30px rgba(255,69,0,0.25); border-color: var(--accent);}
+    .btn:active{ transform: translateY(0) translateZ(0) scale(.99); }
+    .btn .sheen{ position:absolute; inset:0; background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.18) 45%, transparent 60%);
+      transform: translateX(-100%); animation: sheen 4s linear infinite; border-radius:inherit; }
+    @keyframes sheen{ to{ transform: translateX(100%);} }
+
+    /* ===== Hero heading ===== */
+    .hero{ padding: 0 6vw 28px; }
+    .h1{
+      font-size: clamp(28px, 7vw, 64px); line-height:1.02; margin: 10px 0;
+      text-shadow: 0 0 15px rgba(255,69,0,0.45), 0 0 2px rgba(255,69,0,.9);
+      transform: perspective(1000px) rotateX(8deg) translateZ(20px);
+    }
+    .sub{ color:var(--muted); max-width: 70ch; }
+
+    /* ===== Main layout ===== */
+    main{ padding: 24px 6vw 80px; display:grid; grid-template-columns: 1.2fr .8fr; gap:24px; }
+    @media (max-width:980px){ main{ grid-template-columns: 1fr; } }
+
+    /* ===== Panels (3D glass cards) ===== */
+    .panel{
+      position:relative; background: linear-gradient( to bottom right, rgba(255,69,0,0.08), rgba(255,69,0,0.02) );
+      border:1px solid rgba(255,69,0,0.5); border-radius: 18px; box-shadow: var(--shadow);
+      overflow:hidden; transform-style:preserve-3d; perspective: 1000px;
+    }
+    .panel::before{
+      content:""; position:absolute; inset:-1px; border-radius: inherit; pointer-events:none;
+      background: radial-gradient(400px 200px at 10% -10%, rgba(255,69,0,0.25), transparent 40%),
+                  radial-gradient(300px 160px at 90% 110%, rgba(255,69,0,0.18), transparent 50%);
+      mix-blend-mode: screen; opacity:.6;
+    }
+    .panel .hd{ display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid rgba(255,69,0,0.35);
+      background: linear-gradient( to right, rgba(255,69,0,0.08), rgba(255,69,0,0.02) );
+    }
+    .led{ width:8px; height:8px; border-radius:999px; background: var(--accent); box-shadow: 0 0 8px var(--accent), 0 0 20px rgba(255,69,0,0.8); }
+    .hd .title{ font-weight:700; letter-spacing:.06em; text-transform:uppercase; font-size:.9rem }
+
+    /* Terminal panel */
+    .terminal{ height: 360px; display:flex; flex-direction:column; }
+    .term-body{ flex:1; overflow:auto; padding:14px 16px; font-size:.95rem; line-height:1.5; }
+    .term-body .line{ opacity:.9 }
+    .term-body .prompt{ color: var(--accent); }
+    .cursor{ display:inline-block; width:.6ch; background:var(--accent); animation: blink 1.1s steps(2) infinite; }
+    @keyframes blink{ 50%{ opacity:0 } }
+
+    /* Widgets panel */
+    .widgets{ display:grid; grid-template-columns: repeat(2, 1fr); gap:14px; padding:14px; }
+    @media (max-width:520px){ .widgets{ grid-template-columns: 1fr; } }
+    .card{
+      position:relative; background: rgba(15,17,23, .75); border:1px solid rgba(255,69,0,0.45);
+      border-radius:14px; padding:14px; min-height:110px; overflow:hidden; transform-style:preserve-3d;
+      transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .card:hover{ transform: translateY(-4px) translateZ(18px) rotateX(2deg); border-color: var(--accent); box-shadow: 0 12px 28px rgba(255,69,0,0.22); }
+    .card .k{ color:var(--muted); font-size:.8rem; text-transform:uppercase; letter-spacing:.08em; }
+    .card .v{ font-size:1.6rem; font-weight:800; margin-top:8px; text-shadow: 0 0 10px rgba(255,69,0,0.4); }
+
+    /* Mini chart */
+    .spark{ width:100%; height:44px; display:block; }
+    .spark path{ stroke: var(--accent); stroke-width:2; fill: url(#grad); filter: drop-shadow(0 3px 10px rgba(255,69,0,.35)); }
+
+    /* Footer */
+    footer{ padding: 24px 6vw 60px; color:var(--muted); text-align:center; }
+
+    /* Tilt helper */
+    [data-tilt]{ transform-style:preserve-3d; will-change: transform; }
+
+    /* Keyboard hints */
+    .kbd{ display:inline-flex; align-items:center; justify-content:center; padding:2px 6px; border-radius:6px; border:1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06); font-size:.78rem; }
+
+    /* Scrollbar minimal */
+    ::-webkit-scrollbar{ height:8px; width:8px }
+    ::-webkit-scrollbar-thumb{ background: rgba(255,69,0,0.35); border-radius:999px }
+    ::-webkit-scrollbar-track{ background: transparent }
+  </style>
 </head>
 <body>
+  <div class="grid-bg"></div>
+  <canvas id="rain"></canvas>
 
-<h2>🎰 Рулетка с призами</h2>
-<div class="wheel-container">
-  <div class="pointer"></div>
-  <canvas id="wheel" width="400" height="400"></canvas>
-</div>
-<button id="spinBtn">Крутить</button>
+  <header>
+    <a class="logo" href="#" aria-label="Hacker 3D">
+      <div class="cube" aria-hidden="true">
+        <span class="f"></span><span class="b"></span><span class="l"></span>
+        <span class="r"></span><span class="t"></span><span class="d"></span>
+      </div>
+      <div class="brand">Hacker 3D</div>
+    </a>
+    <div class="actions">
+      <a class="btn" href="#" data-tilt><span class="sheen"></span>Сканировать сеть</a>
+      <a class="btn" href="#" data-tilt><span class="sheen"></span>Экспорт отчёта</a>
+      <a class="btn" href="#" data-tilt><span class="sheen"></span>Настройки</a>
+    </div>
+  </header>
 
-<script>
-const canvas = document.getElementById("wheel");
-const ctx = canvas.getContext("2d");
-const size = canvas.width;
-const radius = size / 2;
+  <section class="hero">
+    <h1 class="h1">Неоновый интерфейс <span style="color:var(--accent)">3D</span> для «хакера»</h1>
+    <p class="sub">Глубина, параллакс и стёкла. Акцентный цвет: <b style="color:var(--accent)">#FF4500</b>. Управляй мышью — элементы наклоняются, огни мерцают, консоль печатает.
+      Горячие клавиши: <span class="kbd">F</span> — полноэкранный режим, <span class="kbd">/</span> — фокус в консоли.</p>
+  </section>
 
-// список призов (последний — 100$, он никогда не выпадет)
-const options = [
-  "10 вращений",
-  "50 токенов",
-  "5 токенов",
-  "Скидка 20%",
-  "25 токенов",
-  "Бонус-игра",
-  "15 токенов",
-  "Сюрприз",
-  "30 токенов",
-  "💰 100$"
-];
+  <main>
+    <!-- Terminal panel -->
+    <section class="panel terminal" data-tilt>
+      <div class="hd"><span class="led"></span><div class="title">консоль</div></div>
+      <div class="term-body" id="term"></div>
+      <form id="cmdForm" style="display:flex; gap:10px; padding:0 16px 16px;">
+        <label style="display:flex; align-items:center; gap:8px; flex:1">
+          <span class="prompt">guest@h3d</span>:<span style="color:#6ee7b7">~</span>$
+          <input id="cmd" autocomplete="off" spellcheck="false" placeholder="help | scan --fast | trace 8.8.8.8" style="flex:1; background:var(--bg-soft); color:var(--fg); border:1px solid rgba(255,69,0,0.45); border-radius:10px; padding:10px 12px; font: inherit; outline: none;" />
+        </label>
+        <button class="btn" type="submit"><span class="sheen"></span>Выполнить</button>
+      </form>
+    </section>
 
-const sliceAngle = 2 * Math.PI / options.length;
+    <!-- Widgets panel -->
+    <section class="panel" data-tilt>
+      <div class="hd"><span class="led"></span><div class="title">виджеты</div></div>
+      <div class="widgets">
+        <div class="card" data-tilt>
+          <div class="k">Сессии</div>
+          <div class="v" id="sessions">0</div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="k">Уязвимости</div>
+          <div class="v" id="vulns">0</div>
+        </div>
+        <div class="card" data-tilt>
+          <div class="k">Трафик</div>
+          <svg class="spark" viewBox="0 0 100 30" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(255,69,0,0.45)"/>
+                <stop offset="100%" stop-color="rgba(255,69,0,0)"/>
+              </linearGradient>
+            </defs>
+            <path id="sparkline" d="M0,20 L10,18 L20,22 L30,10 L40,12 L50,8 L60,14 L70,9 L80,12 L90,6 L100,10" fill="url(#grad)"></path>
+          </svg>
+        </div>
+        <div class="card" data-tilt>
+          <div class="k">Нагрузка CPU</div>
+          <div class="v" id="cpu">12%</div>
+        </div>
+      </div>
+    </section>
+  </main>
 
-// рисуем рулетку
-function drawWheel() {
-  for (let i = 0; i < options.length; i++) {
-    ctx.beginPath();
-    ctx.moveTo(radius, radius);
-    ctx.arc(radius, radius, radius, i * sliceAngle, (i + 1) * sliceAngle);
-    ctx.fillStyle = i % 2 === 0 ? "#d32f2f" : "#000"; // красный/черный
-    ctx.fill();
-    ctx.strokeStyle = "#fff";
-    ctx.stroke();
-    // текст
-    ctx.save();
-    ctx.translate(radius, radius);
-    ctx.rotate(i * sliceAngle + sliceAngle / 2);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#fff";
-    ctx.font = "18px Arial";
-    ctx.fillText(options[i], radius - 10, 10);
-    ctx.restore();
-  }
-}
+  <footer>
+    Скелет готов. Подключай свои данные или команды. Сделано с любовью к <span style="color:var(--accent); font-weight:700">#FF4500</span>.
+  </footer>
 
-drawWheel();
+  <script>
+    // ====== Matrix rain ======
+    (function(){
+      const c = document.getElementById('rain');
+      const ctx = c.getContext('2d');
+      function size(){ c.width = innerWidth; c.height = innerHeight; }
+      size(); addEventListener('resize', size);
+      const chars = '01█▓░#@ΔΣλπ$%<>/\\;:[]{}*&^!?'.split('');
+      const fontSize = 16; const cols = () => Math.floor(c.width / fontSize);
+      let drops = new Array(cols()).fill(1);
+      function draw(){
+        ctx.fillStyle = 'rgba(11,11,15,0.08)';
+        ctx.fillRect(0,0,c.width,c.height);
+        ctx.fillStyle = 'rgba(255,69,0,0.85)';
+        ctx.font = fontSize + 'px JetBrains Mono';
+        drops.forEach((y,i)=>{
+          const text = chars[Math.floor(Math.random()*chars.length)];
+          ctx.fillText(text, i*fontSize, y*fontSize);
+          if (y*fontSize > c.height && Math.random() > .975) drops[i]=0;
+          drops[i] = y + 1;
+        });
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
 
-let spinning = false;
-let rotation = 0;
+    // ====== Tilt / parallax for [data-tilt] ======
+    (function(){
+      const max = 10; // deg
+      const els = Array.from(document.querySelectorAll('[data-tilt]'));
+      els.forEach(el=>{
+        el.addEventListener('mousemove', (e)=>{
+          const r = el.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width * 2 - 1; // -1..1
+          const py = (e.clientY - r.top) / r.height * 2 - 1;
+          el.style.transform = `rotateX(${-py*max}deg) rotateY(${px*max}deg) translateZ(12px)`;
+        });
+        el.addEventListener('mouseleave', ()=>{ el.style.transform = 'translateZ(0)'; });
+      });
+    })();
 
-// создаём звук щелчка (без файла — через Web Audio API)
-const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-function playClick() {
-  const osc = audioCtx.createOscillator();
-  const gain = audioCtx.createGain();
-  osc.connect(gain);
-  gain.connect(audioCtx.destination);
-  osc.type = "square";
-  osc.frequency.value = 800;
-  gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-  osc.start();
-  osc.stop(audioCtx.currentTime + 0.1);
-}
-
-document.getElementById("spinBtn").addEventListener("click", () => {
-  if (spinning) return;
-  spinning = true;
-
-  // выбираем случайный приз, кроме "100$"
-  let prizeIndex;
-  do {
-    prizeIndex = Math.floor(Math.random() * options.length);
-  } while (options[prizeIndex] === "💰 100$");
-
-  // угол для остановки
-  let stopAngle = (options.length - prizeIndex) * sliceAngle - sliceAngle/2;
-
-  // случайное количество оборотов (от 5 до 8)
-  let extraSpins = Math.floor(Math.random() * 4) + 5; 
-  let spin = 360 * extraSpins + (stopAngle * 180 / Math.PI); 
-
-  rotation += spin;
-
-  let duration = 5000; // 5 секунд
-  let start = null;
-  let lastSector = -1;
-
-  function animateWheel(timestamp) {
-    if (!start) start = timestamp;
-    let progress = (timestamp - start) / duration;
-    if (progress > 1) progress = 1;
-
-    let easeOut = 1 - Math.pow(1 - progress, 3); // плавное замедление
-    let angle = rotation * easeOut;
-
-    canvas.style.transform = `rotate(${angle}deg)`;
-
-    // звук при переходе сектора
-    let currentSector = Math.floor(((angle % 360) / 360) * options.length);
-    if (currentSector !== lastSector) {
-      playClick();
-      lastSector = currentSector;
+    // ====== Terminal typing & commands ======
+    const term = document.getElementById('term');
+    function print(line){
+      const p = document.createElement('div'); p.className = 'line';
+      p.innerHTML = line; term.appendChild(p); term.scrollTop = term.scrollHeight;
     }
-
-    if (progress < 1) {
-      requestAnimationFrame(animateWheel);
-    } else {
-      spinning = false;
-      alert("🎁 Ты выиграл: " + options[prizeIndex]);
+    function prompt(){
+      const p = document.createElement('div'); p.className='line';
+      p.innerHTML = `<span class="prompt">guest@h3d</span>:<span style="color:#6ee7b7">~</span>$ <span class="cursor">&nbsp;</span>`;
+      term.appendChild(p); term.scrollTop = term.scrollHeight;
     }
-  }
+    const boot = [
+      '[ok] init kernel — <span style="color:#67e8f9">v5.13</span>',
+      '[ok] mount overlay — /systems/h3d',
+      '[ok] attach neon-engine — <span style="color:#a78bfa">v2.1</span>',
+      '[ok] start matrix-rain — <span style="color:#f472b6">active</span>',
+      'tips: type <span style="color:var(--accent)">help</span> to list commands'
+    ];
+    (async function bootSeq(){ for(const b of boot){ print(b); await new Promise(r=>setTimeout(r, 360)); } prompt(); })();
 
-  requestAnimationFrame(animateWheel);
-});
-</script>
+    const commands = {
+      help(){
+        print('available: <b>help</b>, <b>scan</b> [--fast], <b>trace</b> &lt;host&gt;, <b>clear</b>');
+      },
+      clear(){ term.innerHTML=''; },
+      scan(arg){
+        const fast = arg === '--fast';
+        const steps = fast ? 16 : 28;
+        let done=0; const id=setInterval(()=>{
+          const port = Math.floor(Math.random()*65535);
+          const ms = Math.floor(Math.random()*60+10);
+          print(`[scan] port ${port} — <span style="color:${ms>50?'#fb7185':'#34d399'}">${ms}ms</span>`);
+          if(++done>=steps){ clearInterval(id); print(`<b style="color:var(--accent)">scan complete</b>: ${steps} ports sampled`); }
+        }, fast?60:120);
+      },
+      trace(host='8.8.8.8'){
+        const hops = Math.floor(Math.random()*6)+6;
+        for(let i=1;i<=hops;i++){
+          const ms = (Math.random()*40+10).toFixed(1);
+          print(`${i}  10.0.${i}.${Math.floor(Math.random()*255)}  ${ms} ms`);
+        }
+        print(`<b style="color:var(--accent)">trace complete</b> → ${host}`)
+      }
+    };
 
+    const form = document.getElementById('cmdForm');
+    const input = document.getElementById('cmd');
+    form.addEventListener('submit', (e)=>{
+      e.preventDefault();
+      const val = input.value.trim(); if(!val) return;
+      print(`<span class="prompt">guest@h3d</span>:<span style="color:#6ee7b7">~</span>$ ${val}`);
+      const [cmd, arg] = val.split(/\s+/);
+      (commands[cmd]||(()=>print(`command not found: ${cmd}`)))(arg);
+      input.value='';
+    });
+
+    // Focus console with '/'
+    window.addEventListener('keydown', e=>{ if(e.key === '/'){ e.preventDefault(); input.focus(); }});
+
+    // ====== Fake stats ======
+    const sessions = document.getElementById('sessions');
+    const vulns = document.getElementById('vulns');
+    const cpu = document.getElementById('cpu');
+    setInterval(()=>{ sessions.textContent = (parseInt(sessions.textContent)||0) + Math.floor(Math.random()*3); }, 1200);
+    setInterval(()=>{ vulns.textContent = Math.floor(Math.random()*9); }, 1500);
+    setInterval(()=>{ cpu.textContent = (Math.random()*62+8|0) + '%'; }, 800);
+
+    // ====== Animate sparkline ======
+    (function(){
+      const p = document.getElementById('sparkline');
+      let t = 0; 
+      function tick(){
+        t += 0.06;
+        const pts = Array.from({length: 21}, (_,i)=>{
+          const x = i * 5;
+          const y = 15 + Math.sin(t + i*0.6)*8 + Math.cos(t*0.7 + i)*3;
+          return `${x},${30 - Math.max(2, Math.min(28, y))}`;
+        });
+        p.setAttribute('d', 'M'+pts.join(' L'));
+        requestAnimationFrame(tick);
+      }
+      tick();
+    })();
+
+    // ====== Fullscreen toggle (F) ======
+    addEventListener('keydown', (e)=>{
+      if(e.key.toLowerCase()==='f'){
+        if(!document.fullscreenElement){ document.documentElement.requestFullscreen().catch(()=>{}); }
+        else{ document.exitFullscreen().catch(()=>{}); }
+      }
+    });
+  </script>
 </body>
 </html>
